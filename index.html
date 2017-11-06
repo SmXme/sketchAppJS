@@ -4,6 +4,7 @@
 	<title>SketchApp</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 <body>
 <input type="number" name="inputThickness" id="inputThickness"/>
@@ -11,8 +12,6 @@
 <input type="submit" name="inputSubmit" id="inputSubmit">
 
 <canvas id="drawCanvas"></canvas>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
 <script>
 
@@ -49,11 +48,20 @@
 		lastY = event.offsetY;
 		return drawing;
 	}
-
+	function sendPaths(){
+		parameters = {
+			url:'http://draw.api.niamor.com/paths/add',
+			method:'post',
+			data: paths 
+		};
+		$.ajax(parameters).done();
+	}
 	function stopDraw(){
 		drawing = false;
+		sendPaths();
 		return drawing;
 	}
+
 
 	path=[];
 	paths=[];

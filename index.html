@@ -6,30 +6,48 @@
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
+<input type="number" name="inputThickness" id="inputThickness"/>
+<input type="color" name="inputColor" id="inputColor"/>
+<input type="submit" name="inputSubmit" id="inputSubmit">
 
 <canvas id="drawCanvas"></canvas>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
 <script>
 
-	function resizeCanvas() {
+	function getSettings(){
+		var ctx = c.getContext("2d");
+		console.log();
+		ctx.strokeStyle = $('#inputColor').val();
+		ctx.lineWidth = $('#inputThickness').val();
+	}
+
+	function resizeCanvas(){
 		var c = document.getElementById("drawCanvas");
 		c.width = $('#drawCanvas').width();
 		c.height = $('#drawCanvas').height();
 	}
 
+	function letsDraw(){
+		var ctx = c.getContext("2d");
+		ctx.beginPath();
+		ctx.moveTo(0,0);
+		ctx.lineTo(event.clientX,event.clientY);
+		ctx.stroke();
+		console.log("je dessine");
+	}
+
+	$('#drawCanvas').on("mousedown" , letsDraw);
+
 	$(window).resize(resizeCanvas());
 
-	
+	$('#inputSubmit').on("click" , getSettings);
+
 	var c = document.getElementById("drawCanvas");
 	c.width = $('#drawCanvas').width();
 	c.height = $('#drawCanvas').height();
 	
-	var ctx = c.getContext("2d");
-	ctx.moveTo(0,0);
-	ctx.lineTo(200,100);
-	ctx.stroke();
-
 </script>
 
 </body>

@@ -29,17 +29,37 @@
 		c.height = $('#drawCanvas').height();
 	}
 
-	function letsDraw(){
-		var ctx = c.getContext("2d");
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.lineTo(event.clientX,event.clientY);
-		ctx.stroke();
-		console.log("je dessine");
+	function keepDraw(){
+		if (drawing == true){
+			var ctx = c.getContext("2d");
+			ctx.beginPath();
+			ctx.moveTo(lastX,lastY);
+			ctx.lineTo(event.clientX,event.clientY);
+			ctx.stroke();
+			lastX = event.clientX;
+			lastY = event.clientY;
+		}
 	}
 
-	$('#drawCanvas').on("mousedown" , letsDraw);
+	function startDraw(){
+		drawing = true;
+		lastX = event.clientX;
+		lastY = event.clientY;
+		return drawing;
+	}
 
+	function stopDraw(){
+		drawing = false;
+		return drawing;
+	}
+
+	lastX = 0;
+	lastY = 0;
+	drawing = false;
+	
+	$('#drawCanvas').on("mousedown" , startDraw);
+	$('#drawCanvas').on("mouseup", stopDraw);
+	$('#drawCanvas').on("mousemove",keepDraw);
 	$(window).resize(resizeCanvas());
 
 	$('#inputSubmit').on("click" , getSettings);

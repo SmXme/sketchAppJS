@@ -65,7 +65,6 @@
 
 	path=[];
 	paths=[];
-
 	lastX = 0;
 	lastY = 0;
 	drawing = false;
@@ -73,7 +72,7 @@
 	$('#drawCanvas').on("mousedown" , startDraw);
 	$('#drawCanvas').on("mouseup", stopDraw);
 	$('#drawCanvas').on("mousemove",keepDraw);
-	$(window).resize(resizeCanvas());
+	$(window).resize(resizeCanvas);
 
 	$('#inputSubmit').on("click" , getSettings);
 

@@ -3,13 +3,34 @@
 <head>
 	<title>SketchApp</title>
 	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
 
-<canvas></canvas>
+<canvas id="drawCanvas"></canvas>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
+<script>
 
+	function resizeCanvas() {
+		var c = document.getElementById("drawCanvas");
+		c.width = $('#drawCanvas').width();
+		c.height = $('#drawCanvas').height();
+	}
+
+	$(window).resize(resizeCanvas());
+
+	
+	var c = document.getElementById("drawCanvas");
+	c.width = $('#drawCanvas').width();
+	c.height = $('#drawCanvas').height();
+	
+	var ctx = c.getContext("2d");
+	ctx.moveTo(0,0);
+	ctx.lineTo(200,100);
+	ctx.stroke();
+
+</script>
 
 </body>
 </html>

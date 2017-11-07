@@ -24,14 +24,14 @@
 		<p id="infoSlider"></p>
 		<canvas id="drawCanvas"></canvas>
 		<script>
-
 			function setValue(){
 				var max = myLastId;
 				$('#slider')
 					.slider("option","max",max);
 				var wantedId = $("#slider").slider("option","value");
 				$('#infoSlider').html(wantedId);
-			}			
+			}
+			$('#slider').mousemove(setValue);
 			function getSettings(){
 				var ctx = c.getContext("2d");
 				console.log();
@@ -130,7 +130,6 @@
 			$(window).resize(resizeCanvas);
 			$('#inputSubmit').on("click" , getSettings);
 			var c = document.getElementById("drawCanvas");
-			$('#slider').mousemove(setValue);
 			c.width = $('#drawCanvas').width();
 			c.height = $('#drawCanvas').height();
 		</script>

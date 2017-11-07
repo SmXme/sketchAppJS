@@ -1,89 +1,100 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>SketchApp</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="css/styles.css">
-<script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
-</head>
-<body>
-<input type="number" name="inputThickness" id="inputThickness"/>
-<input type="color" name="inputColor" id="inputColor"/>
-<input type="submit" name="inputSubmit" id="inputSubmit">
+	<head>
+		<title>SketchApp</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<script
+		src="https://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+		crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<input type="number" name="inputThickness" id="inputThickness"/>
+		<input type="color" name="inputColor" id="inputColor"/>
+		<input type="submit" name="inputSubmit" id="inputSubmit">
+		<canvas id="drawCanvas"></canvas>
+		<script>
+			function getSettings(){
+				var ctx = c.getContext("2d");
+				console.log();
+				ctx.strokeStyle = $('#inputColor').val();
+				ctx.lineWidth = $('#inputThickness').val();
+			}
+			function resizeCanvas(){
+				var c = document.getElementById("drawCanvas");
+				c.width = $('#drawCanvas').width();
+				c.height = $('#drawCanvas').height();
+			}
+			function keepDraw(){
+				if (drawing == true){
+					path=[event.offsetX,event.offsetY];
+					paths.push(path);
+					var ctx = c.getContext("2d");
+					ctx.beginPath();
+					ctx.moveTo(lastX,lastY);
+					ctx.lineTo(event.offsetX,event.offsetY);
+					ctx.stroke();
+					lastX = event.offsetX;
+					lastY = event.offsetY;
+				}
+			}
+			function drawPaths(allPaths){
+				var ctx = c.getContext("2d");
+				ctx.clearRect(0,0,c.width,c.height);
+					for (i = 0 ; i < allPaths.length ; i++){
+						ctx.beginPath();
+						ctx.strokeStyle = allPaths[i].strokeColor;
+						ctx.lineWidth = allPaths[i].lineWidth;
+						for (j = 0 ; j < allPaths[i].path.length ; j++){
+							ctx.lineTo (allPaths[i].path[j][0], allPaths[i].path[j][1]);
+						}
+						ctx.stroke();
+					}
+				}
 
-<canvas id="drawCanvas"></canvas>
-
-<script>
-
-	function getSettings(){
-		var ctx = c.getContext("2d");
-		console.log();
-		ctx.strokeStyle = $('#inputColor').val();
-		ctx.lineWidth = $('#inputThickness').val();
-	}
-
-	function resizeCanvas(){
-		var c = document.getElementById("drawCanvas");
-		c.width = $('#drawCanvas').width();
-		c.height = $('#drawCanvas').height();
-	}
-
-	function keepDraw(){
-		if (drawing == true){
-			path=[event.offsetX,event.offsetY];
-			paths.push(path);
-			var ctx = c.getContext("2d");
-			ctx.beginPath();
-			ctx.moveTo(lastX,lastY);
-			ctx.lineTo(event.offsetX,event.offsetY);
-			ctx.stroke();
-			lastX = event.offsetX;
-			lastY = event.offsetY;
-		}
-	}
-
-	function startDraw(){
-		drawing = true;
-		lastX = event.offsetX;
-		lastY = event.offsetY;
-		return drawing;
-	}
-	function sendPaths(){
-		parameters = {
-			url:'http://draw.api.niamor.com/paths/add',
-			method:'POST',
-			data: paths, 
-		};
-		$.ajax(parameters).done();
-	}
-	function stopDraw(){
-		drawing = false;
-		sendPaths();
-		return drawing;
-	}
-
-
-	path=[];
-	paths=[];
-	lastX = 0;
-	lastY = 0;
-	drawing = false;
-	
-	$('#drawCanvas').on("mousedown" , startDraw);
-	$('#drawCanvas').on("mouseup", stopDraw);
-	$('#drawCanvas').on("mousemove",keepDraw);
-	$(window).resize(resizeCanvas);
-
-	$('#inputSubmit').on("click" , getSettings);
-
-	var c = document.getElementById("drawCanvas");
-	c.width = $('#drawCanvas').width();
-	c.height = $('#drawCanvas').height();
-	
-</script>
-
-</body>
+			function startDraw(){
+				drawing = true;
+				lastX = event.offsetX;
+				lastY = event.offsetY;
+				return drawing;
+			}
+			function getPaths(){
+				parametersGet = {
+					url: 'http://draw.api.niamor.com/paths',
+				};
+				$.ajax(parametersGet).done(drawPaths);
+			}
+			function sendPaths(){
+				parametersSend = {
+					url:'http://draw.api.niamor.com/paths/add',
+					method:'post',
+					data: {
+						path: paths
+					}
+				};
+				$.ajax(parametersSend);
+			}
+			function stopDraw(){
+				drawing = false;
+				sendPaths();
+				getPaths();
+				return drawing;
+			}
+			path=[];
+			paths=[];
+			lastX = 0;
+			lastY = 0;
+			drawing = false;
+			$('#drawCanvas').on("mousedown" , startDraw);
+			$('#drawCanvas').on("mouseup", stopDraw);
+			$('#drawCanvas').on("mousemove",keepDraw);
+			$(window).resize(resizeCanvas);
+			$('#inputSubmit').on("click" , getSettings);
+			var c = document.getElementById("drawCanvas");
+			c.width = $('#drawCanvas').width();
+			c.height = $('#drawCanvas').height();
+			
+		</script>
+	</body>
 </html>

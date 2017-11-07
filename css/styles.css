@@ -20,4 +20,9 @@ canvas {
 #infoSlider{
 	display: inline-block;
 	width: auto;
+	margin-left: 30px;
+}
+
+#getButton{
+	margin-left: 20px;
 }

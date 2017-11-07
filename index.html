@@ -22,15 +22,17 @@
 		<input type="submit" name="inputSubmit" id="inputSubmit">
 		<div id="slider"></div>	
 		<p id="infoSlider"></p>
-		<button id="getButton">test value</button>
 		<canvas id="drawCanvas"></canvas>
 		<script>
-			function getValue(){
+			function setValue(){
+				var max = myLastId;
+				$('#slider')
+					.slider("option","max",max);
 				var value = $("#slider").slider("option","value");
 				$('#infoSlider').html(value);
 			}
+			$('#slider').mousemove(setValue);
 
-			$('#getButton').click(getValue);
 			function getSettings(){
 				var ctx = c.getContext("2d");
 				console.log();

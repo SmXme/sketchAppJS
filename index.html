@@ -18,8 +18,8 @@
 			function getSettings(){
 				var ctx = c.getContext("2d");
 				console.log();
-				ctx.strokeStyle = $('#inputColor').val();
-				ctx.lineWidth = $('#inputThickness').val();
+				myColor = $('#inputColor').val();
+				myThickness = $('#inputThickness').val();
 			}
 			function resizeCanvas(){
 				var c = document.getElementById("drawCanvas");
@@ -28,9 +28,12 @@
 			}
 			function keepDraw(){
 				if (drawing == true){
+					getSettings();
 					path=[event.offsetX,event.offsetY];
 					paths.push(path);
 					var ctx = c.getContext("2d");
+					ctx.strokeStyle = myColor;
+					ctx.lineWidth = myThickness;
 					ctx.beginPath();
 					ctx.moveTo(lastX,lastY);
 					ctx.lineTo(event.offsetX,event.offsetY);
@@ -39,9 +42,10 @@
 					lastY = event.offsetY;
 				}
 			}
+
 			function drawPaths(allPaths){
+				
 				var ctx = c.getContext("2d");
-				ctx.clearRect(0,0,c.width,c.height);
 					for (i = 0 ; i < allPaths.length ; i++){
 						ctx.beginPath();
 						ctx.strokeStyle = allPaths[i].strokeColor;
@@ -49,6 +53,7 @@
 						for (j = 0 ; j < allPaths[i].path.length ; j++){
 							ctx.lineTo (allPaths[i].path[j][0], allPaths[i].path[j][1]);
 						}
+						myLastId = allPaths[i].id;
 						ctx.stroke();
 					}
 				}
@@ -60,17 +65,25 @@
 				return drawing;
 			}
 			function getPaths(){
-				parametersGet = {
-					url: 'http://draw.api.niamor.com/paths',
-				};
-				$.ajax(parametersGet).done(drawPaths);
+				if (drawing === false){
+					parametersGet = {
+						url: 'http://draw.api.niamor.com/paths',
+						data: {
+							lastId : myLastId
+						}
+					};
+					$.ajax(parametersGet).done(drawPaths);
+				}
 			}
 			function sendPaths(){
 				parametersSend = {
 					url:'http://draw.api.niamor.com/paths/add',
 					method:'post',
 					data: {
-						path: paths
+						path: paths,
+						strokeColor : myColor,
+						lineWidth : myThickness
+
 					}
 				};
 				$.ajax(parametersSend);
@@ -78,14 +91,20 @@
 			function stopDraw(){
 				drawing = false;
 				sendPaths();
+				paths=[];
 				getPaths();
 				return drawing;
 			}
+			$(document).ready(setInterval(getPaths, 3000));
+			myThickness = 1;
+			myColor = 1;
+			myLastId=0;	
 			path=[];
 			paths=[];
 			lastX = 0;
 			lastY = 0;
 			drawing = false;
+			$(document).ready(getPaths)
 			$('#drawCanvas').on("mousedown" , startDraw);
 			$('#drawCanvas').on("mouseup", stopDraw);
 			$('#drawCanvas').on("mousemove",keepDraw);

@@ -11,3 +11,13 @@ canvas {
 	height: 95%;
 	border: 1px solid black;
 }
+#slider {
+	width: 30%;
+	margin-left: 20px;
+	display: inline-block;
+}
+
+#infoSlider{
+	display: inline-block;
+	width: auto;
+}
